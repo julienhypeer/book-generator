@@ -35,6 +35,12 @@ interface EditorState {
   toggleSidebar: () => void;
   togglePreview: () => void;
   reset: () => void;
+  
+  // Memory management
+  clearUnusedContent: () => void;
+  trimContentHistory: (maxSize?: number) => void;
+  getMemoryUsage: () => { chapters: number; contentSize: number; totalSize: number };
+  cleanup: () => void;
 }
 
 const defaultSettings: EditorSettings = {
@@ -155,6 +161,95 @@ export const useEditorStore = create<EditorState>()(
             isLoading: false,
             isSaving: false,
           }),
+        
+        // Memory management methods
+        clearUnusedContent: () => {
+          const state = get();
+          const activeChapterIds = new Set(state.chapters.map(c => c.id));
+          const newContent = new Map();
+          const newUnsaved = new Set();
+          
+          // Keep only content for existing chapters
+          state.content.forEach((content, chapterId) => {
+            if (activeChapterIds.has(chapterId)) {
+              newContent.set(chapterId, content);
+            }
+          });
+          
+          // Clean up unsaved changes for removed chapters
+          state.unsavedChanges.forEach(chapterId => {
+            if (activeChapterIds.has(chapterId)) {
+              newUnsaved.add(chapterId);
+            }
+          });
+          
+          set({ content: newContent, unsavedChanges: newUnsaved });
+        },
+        
+        trimContentHistory: (maxSize = 50) => {
+          const state = get();
+          
+          if (state.chapters.length > maxSize) {
+            // Keep only recent chapters and their content
+            const recentChapters = state.chapters.slice(-maxSize);
+            const recentChapterIds = new Set(recentChapters.map(c => c.id));
+            const newContent = new Map();
+            const newUnsaved = new Set();
+            
+            recentChapters.forEach(chapter => {
+              const content = state.content.get(chapter.id);
+              if (content) {
+                newContent.set(chapter.id, content);
+              }
+              if (state.unsavedChanges.has(chapter.id)) {
+                newUnsaved.add(chapter.id);
+              }
+            });
+            
+            set({
+              chapters: recentChapters,
+              content: newContent,
+              unsavedChanges: newUnsaved,
+              activeChapterId: recentChapterIds.has(state.activeChapterId || 0) 
+                ? state.activeChapterId 
+                : recentChapters[0]?.id || null
+            });
+          }
+        },
+        
+        getMemoryUsage: () => {
+          const state = get();
+          let contentSize = 0;
+          
+          state.content.forEach(content => {
+            contentSize += content.length * 2; // Rough estimate: 2 bytes per character
+          });
+          
+          const totalSize = contentSize + (state.chapters.length * 500); // Rough chapter metadata size
+          
+          return {
+            chapters: state.chapters.length,
+            contentSize: Math.round(contentSize / 1024), // KB
+            totalSize: Math.round(totalSize / 1024) // KB
+          };
+        },
+        
+        cleanup: () => {
+          const actions = get();
+          
+          // Clear unused content
+          actions.clearUnusedContent();
+          
+          // Trim if too many chapters (performance threshold)
+          if (actions.chapters.length > 100) {
+            actions.trimContentHistory(100);
+          }
+          
+          // Force garbage collection hint
+          if (window.gc) {
+            window.gc();
+          }
+        },
       }),
       {
         name: 'editor-store',
