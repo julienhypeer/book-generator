@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <meta name="author" content="{{ author }}">
+    
+    <style>
+        @page {
+            size: A4;
+            margin: 25mm 20mm;
+            
+            @top-center {
+                content: "{{ title }}";
+                font-size: 9pt;
+                color: #666;
+            }
+            
+            @bottom-center {
+                content: counter(page);
+                font-size: 10pt;
+            }
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.8;
+            text-align: justify;
+            hyphens: auto;
+        }
+        
+        /* Academic styling */
+        h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: left;
+            margin: 2em 0 1em 0;
+            page-break-before: always;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 1.5em 0 0.5em 0;
+        }
+        
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            font-style: italic;
+            margin: 1em 0 0.5em 0;
+        }
+        
+        /* Abstract */
+        .abstract {
+            margin: 2em 4em;
+            font-size: 11pt;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .abstract h2 {
+            text-align: center;
+            font-style: normal;
+            font-size: 12pt;
+        }
+        
+        /* Citations */
+        .citation {
+            margin-left: 2em;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        
+        /* References */
+        .references {
+            page-break-before: always;
+        }
+        
+        .references ol {
+            padding-left: 0;
+            list-style-position: inside;
+        }
+        
+        .references li {
+            margin: 0.5em 0;
+            text-indent: -2em;
+            padding-left: 2em;
+        }
+        
+        /* Figures and tables */
+        figure, table {
+            margin: 1.5em 0;
+        }
+        
+        figcaption, .table-caption {
+            font-size: 10pt;
+            margin: 0.5em 0;
+        }
+        
+        figcaption {
+            text-align: center;
+        }
+        
+        .table-caption {
+            caption-side: top;
+            text-align: left;
+        }
+        
+        /* Equations */
+        .equation {
+            display: block;
+            text-align: center;
+            margin: 1em 0;
+            position: relative;
+        }
+        
+        .equation-number {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+    {% if abstract %}
+    <div class="abstract">
+        <h2>Abstract</h2>
+        {{ abstract | safe }}
+    </div>
+    {% endif %}
+    
+    {{ content | safe }}
+    
+    {% if references %}
+    <div class="references">
+        <h1>References</h1>
+        {{ references | safe }}
+    </div>
+    {% endif %}
+</body>
+</html>

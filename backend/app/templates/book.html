@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - {{ chapter_title | default('') }}</title>
+    <meta name="author" content="{{ author }}">
+    <meta name="description" content="{{ description | default('') }}">
+    
+    {# CSS for print media #}
+    <style>
+        @page {
+            size: {{ page_format | default('156mm 234mm') }};
+            margin: {{ margins.top | default(20) }}mm {{ margins.right | default(15) }}mm {{ margins.bottom | default(20) }}mm {{ margins.left | default(15) }}mm;
+            
+            {% if page_numbers %}
+            @bottom-center {
+                content: counter(page);
+                font-size: 10pt;
+                color: #666;
+            }
+            {% endif %}
+        }
+        
+        body {
+            font-family: {{ font_family | default('Georgia, serif') }};
+            font-size: {{ font_size | default(12) }}pt;
+            line-height: {{ line_height | default(1.5) }};
+            text-align: justify;
+            {% if hyphenation %}
+            hyphens: auto;
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphenate-language: "{{ lang | default('en') }}";
+            {% endif %}
+        }
+        
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: {{ heading_font | default(font_family) | default('Georgia, serif') }};
+            page-break-after: avoid;
+            page-break-inside: avoid;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        
+        h1 {
+            font-size: 24pt;
+            text-align: center;
+            margin-top: 0;
+            page-break-before: always;
+        }
+        
+        h2 {
+            font-size: 18pt;
+            margin-top: 2em;
+        }
+        
+        h3 {
+            font-size: 14pt;
+        }
+        
+        /* Paragraphs */
+        p {
+            margin: 0;
+            text-indent: 1.5em;
+            orphans: 3;
+            widows: 3;
+        }
+        
+        p:first-of-type,
+        h1 + p,
+        h2 + p,
+        h3 + p,
+        blockquote + p {
+            text-indent: 0;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+        
+        li {
+            margin: 0.25em 0;
+        }
+        
+        /* Blockquotes */
+        blockquote {
+            margin: 1em 2em;
+            font-style: italic;
+            border-left: 3px solid #ccc;
+            padding-left: 1em;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            padding: 0.5em;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        /* Code blocks */
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 1em;
+            overflow-x: auto;
+            page-break-inside: avoid;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        code {
+            background-color: #f8f8f8;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        /* Images and figures */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+            page-break-inside: avoid;
+        }
+        
+        figure {
+            margin: 1em 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+        
+        figcaption {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 0.5em;
+            font-style: italic;
+        }
+        
+        /* Footnotes */
+        .footnote {
+            font-size: 0.85em;
+            vertical-align: super;
+        }
+        
+        .footnotes {
+            margin-top: 3em;
+            padding-top: 1em;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        
+        /* Page breaks */
+        .page-break {
+            page-break-after: always;
+        }
+        
+        .avoid-break {
+            page-break-inside: avoid;
+        }
+        
+        /* Table of contents */
+        .toc {
+            page-break-after: always;
+            margin: 2em 0;
+        }
+        
+        .toc h2 {
+            text-align: center;
+            page-break-before: avoid;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin: 0.5em 0;
+            position: relative;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .toc a::after {
+            content: leader('.') target-counter(attr(href), page);
+        }
+        
+        /* Links */
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
+        
+        @media print {
+            a {
+                color: #000;
+                text-decoration: none;
+            }
+            
+            a[href^="http"]:after {
+                content: " (" attr(href) ")";
+                font-size: 0.8em;
+                color: #666;
+            }
+            
+            a[href^="#"]:after {
+                content: "";
+            }
+        }
+        
+        /* Math */
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+        
+        .math.display {
+            display: block;
+            text-align: center;
+            margin: 1em 0;
+        }
+        
+        /* Custom classes */
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0.2em;
+        }
+        
+        .warning {
+            border-left-color: #ff9800;
+            background-color: #fff3e0;
+        }
+        
+        .custom-title {
+            color: #1976d2;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 0.5em;
+        }
+    </style>
+    
+    {% if custom_css %}
+    <style>
+        {{ custom_css | safe }}
+    </style>
+    {% endif %}
+</head>
+<body>
+    {% if toc and toc_position == 'before' %}
+    <nav class="toc">
+        <h2>{{ toc_title | default('Table of Contents') }}</h2>
+        {{ toc_content | safe }}
+    </nav>
+    {% endif %}
+    
+    <main>
+        {% if show_chapter_title %}
+        <h1>{{ chapter_title }}</h1>
+        {% endif %}
+        
+        {{ content | safe }}
+    </main>
+    
+    {% if toc and toc_position == 'after' %}
+    <nav class="toc">
+        <h2>{{ toc_title | default('Table of Contents') }}</h2>
+        {{ toc_content | safe }}
+    </nav>
+    {% endif %}
+</body>
+</html>
