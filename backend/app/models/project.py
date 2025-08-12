@@ -35,6 +35,5 @@ class Project(Base):
 
     def __repr__(self):
         return (
-            f"<Project(id={self.id}, title='{self.title}', "
-            f"author='{self.author}')>"
+            f"<Project(id={self.id}, title='{self.title}', " f"author='{self.author}')>"
         )

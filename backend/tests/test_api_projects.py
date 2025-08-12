@@ -8,6 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base, get_db_session
 from app.main import app
+
 # Import models to register with Base (noqa: F401)
 from app.models import Project, Chapter  # noqa: F401
 
@@ -20,9 +21,7 @@ engine = create_engine(
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine
-)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():
@@ -185,9 +184,7 @@ class TestProjectUpdate:
             "title": "Updated Title",
             "description": "Updated description",
         }
-        response = client.patch(
-            f"/api/projects/{project_id}", json=update_data
-        )
+        response = client.patch(f"/api/projects/{project_id}", json=update_data)
 
         assert response.status_code == 200
         data = response.json()
@@ -221,9 +218,7 @@ class TestProjectUpdate:
                 "line_height": 1.5,
             }
         }
-        response = client.patch(
-            f"/api/projects/{project_id}", json=update_data
-        )
+        response = client.patch(f"/api/projects/{project_id}", json=update_data)
 
         assert response.status_code == 200
         data = response.json()

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import init_database, init_session_factory
 from app.core.storage import init_storage
-from app.api import projects_router
+from app.api import projects_router, chapters_router
 
 
 # Global database engine
@@ -85,6 +85,7 @@ async def health_check():
 
 # Include API routers
 app.include_router(projects_router)
+app.include_router(chapters_router)
 
 
 if __name__ == "__main__":

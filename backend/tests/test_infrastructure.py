@@ -37,9 +37,7 @@ class TestDatabaseSetup:
         inspector = inspect(engine)
 
         # Check projects table structure
-        project_columns = {
-            col["name"] for col in inspector.get_columns("projects")
-        }
+        project_columns = {col["name"] for col in inspector.get_columns("projects")}
         expected_project_cols = {
             "id",
             "title",
@@ -52,9 +50,7 @@ class TestDatabaseSetup:
         assert expected_project_cols.issubset(project_columns)
 
         # Check chapters table structure
-        chapter_columns = {
-            col["name"] for col in inspector.get_columns("chapters")
-        }
+        chapter_columns = {col["name"] for col in inspector.get_columns("chapters")}
         expected_chapter_cols = {
             "id",
             "project_id",

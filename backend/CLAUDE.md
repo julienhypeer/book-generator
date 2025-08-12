@@ -214,15 +214,24 @@ async def health_check():
 - ✅ 13 tests unitaires pour les endpoints
 - ✅ Code formaté et linté
 
+### PR #3 - Gestionnaire de Chapitres (Complété)
+- ✅ Schémas Pydantic pour chapters (ChapterCreate, ChapterUpdate, ChapterResponse)
+- ✅ Service ChapterService avec gestion automatique des positions
+- ✅ Endpoints CRUD complets (/api/projects/{id}/chapters)
+- ✅ Import/Export Markdown avec extraction H1
+- ✅ Réorganisation bulk des chapitres
+- ✅ 18 tests unitaires complets
+- ✅ Code formaté et linté
+
 ### Structure Actuelle
 ```
 /app
   /core         → Configuration (database, pdf, storage) ✅
   /models       → Modèles SQLAlchemy (Project, Chapter) ✅
-  /api          → Endpoints REST (projects) ✅
-  /services     → Services (ProjectService) ✅
+  /api          → Endpoints REST (projects, chapters) ✅
+  /services     → Services (ProjectService, ChapterService) ✅
   /tasks        → Tâches Celery (à venir - PR #8)
-  /validators   → Schémas Pydantic (project) ✅
+  /validators   → Schémas Pydantic (project, chapter) ✅
 ```
 
 ## 🔧 Commandes
