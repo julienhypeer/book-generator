@@ -219,8 +219,16 @@ Chaque PR doit passer les 6 tests critiques :
 - ✅ Remplacement Google Fonts par fonts système locales
 - ✅ Tests complets export PDF avec PyPDF2
 
+### ✅ PR #7 - WebSocket Preview en Temps Réel (Complété)
+- ✅ Gestionnaire WebSocket avec ConnectionManager
+- ✅ Endpoint /ws/preview/{project_id} pour preview live
+- ✅ Système de notifications push
+- ✅ Debouncing côté serveur (1s de délai)
+- ✅ Support typographie française dans les previews
+- ✅ Tests WebSocket avec mocks asyncio
+- ✅ Services Project et Chapter complétés
+
 ### 🔄 Prochaines Étapes
-- PR #7: Prévisualisation HTML Live avec WebSocket
 - PR #8: Corrections Frontend (tests Vitest, memory cleanup)
 - PR #9: Résolution Problèmes Pagination Avancés
 - PR #10: API Export Multi-formats (EPUB, DOCX)
