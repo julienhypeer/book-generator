@@ -1,0 +1,61 @@
+
+    /* Academic Paper Template */
+    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');  /* noqa */
+    
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 2;
+        color: #000;
+        text-align: justify;
+    }
+    
+    h1 {
+        font-size: 14pt;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        margin: 30mm 0 15mm 0;
+    }
+    
+    h2 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin: 12mm 0 6mm 0;
+    }
+    
+    h3 {
+        font-size: 12pt;
+        font-weight: normal;
+        font-style: italic;
+        margin: 8mm 0 4mm 0;
+    }
+    
+    p {
+        text-indent: 0.5in;
+        margin: 0 0 12pt 0;
+    }
+    
+    .abstract {
+        margin: 0 1in;
+        font-size: 11pt;
+        text-align: justify;
+    }
+    
+    .citation {
+        margin-left: 0.5in;
+        text-indent: -0.5in;
+        margin-bottom: 12pt;
+    }
+    
+    .footnote {
+        font-size: 10pt;
+        line-height: 1.5;
+    }
+    
+    blockquote {
+        margin: 0 0.5in;
+        font-size: 11pt;
+        line-height: 1.5;
+    }
+    

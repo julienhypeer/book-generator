@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://backend:8000
+      - VITE_WS_URL=ws://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - book-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./storage:/storage
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:////storage/database.db
+      - REDIS_URL=redis://redis:6379
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - book-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - book-network
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    volumes:
+      - ./backend:/app
+      - ./storage:/storage
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:////storage/database.db
+      - REDIS_URL=redis://redis:6379
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    depends_on:
+      - redis
+      - backend
+    networks:
+      - book-network
+
+  flower:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    command: celery -A app.tasks.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - CELERY_RESULT_BACKEND=redis://redis:6379
+    depends_on:
+      - redis
+      - celery
+    networks:
+      - book-network
+
+networks:
+  book-network:
+    driver: bridge
+
+volumes:
+  redis-data:

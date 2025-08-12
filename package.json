@@ -1,0 +1,42 @@
+{
+  "name": "book-generator",
+  "version": "1.0.0",
+  "description": "Professional book generator with PDF export for printing",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && pytest",
+    "test:e2e": "cd tests && npm run e2e",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "clean": "rm -rf frontend/node_modules frontend/dist backend/__pycache__ storage/exports/*"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/book-generator.git"
+  },
+  "keywords": [
+    "book",
+    "pdf",
+    "generator",
+    "publishing",
+    "weasyprint"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

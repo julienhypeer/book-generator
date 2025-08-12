@@ -1,0 +1,49 @@
+
+    /* Roman/Fiction Book Template */
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');  /* noqa */
+    
+    body {
+        font-family: 'Crimson Text', Georgia, serif;
+        font-size: 11pt;
+        line-height: 1.8;
+        color: #2c2c2c;
+    }
+    
+    h1 {
+        font-size: 24pt;
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 60mm 0 30mm 0;
+        text-align: center;
+    }
+    
+    h2 {
+        font-size: 18pt;
+        font-weight: normal;
+        font-style: italic;
+        margin: 20mm 0 10mm 0;
+    }
+    
+    p {
+        text-indent: 1.5em;
+        margin: 0;
+    }
+    
+    p.first {
+        text-indent: 0;
+    }
+    
+    .drop-cap {
+        float: left;
+        font-size: 48pt;
+        line-height: 0.8;
+        margin: 0.1em 0.1em 0 0;
+    }
+    
+    blockquote {
+        margin: 1em 2em;
+        font-style: italic;
+        color: #555;
+    }
+    

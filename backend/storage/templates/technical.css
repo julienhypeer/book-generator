@@ -1,0 +1,79 @@
+
+    /* Technical Documentation Template */
+    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap');  /* noqa */
+    
+    body {
+        font-family: 'Source Sans Pro', Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.6;
+        color: #333;
+    }
+    
+    h1 {
+        font-size: 20pt;
+        font-weight: 700;
+        border-bottom: 2px solid #2196F3;
+        padding-bottom: 5mm;
+        margin: 40mm 0 15mm 0;
+    }
+    
+    h2 {
+        font-size: 16pt;
+        font-weight: 600;
+        color: #2196F3;
+        margin: 15mm 0 8mm 0;
+    }
+    
+    h3 {
+        font-size: 13pt;
+        font-weight: 600;
+        margin: 10mm 0 5mm 0;
+    }
+    
+    code {
+        font-family: 'Source Code Pro', monospace;
+        background-color: #f5f5f5;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 9pt;
+    }
+    
+    pre {
+        background-color: #f5f5f5;
+        border-left: 3px solid #2196F3;
+        padding: 1em;
+        font-size: 9pt;
+        overflow-x: auto;
+    }
+    
+    table {
+        border: 1px solid #ddd;
+        margin: 1em 0;
+    }
+    
+    th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        padding: 0.5em;
+        text-align: left;
+    }
+    
+    td {
+        padding: 0.5em;
+        border-top: 1px solid #ddd;
+    }
+    
+    .note {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196F3;
+        padding: 1em;
+        margin: 1em 0;
+    }
+    
+    .warning {
+        background-color: #fff3e0;
+        border-left: 4px solid #ff9800;
+        padding: 1em;
+        margin: 1em 0;
+    }
+    
