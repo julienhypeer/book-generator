@@ -1,9 +1,9 @@
 
     /* Roman/Fiction Book Template */
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');  /* noqa */
+    @import url('../fonts/fonts.css');
     
     body {
-        font-family: 'Crimson Text', Georgia, serif;
+        font-family: 'BookSerif', Georgia, serif;
         font-size: 11pt;
         line-height: 1.8;
         color: #2c2c2c;

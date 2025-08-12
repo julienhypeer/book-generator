@@ -1,9 +1,9 @@
 
     /* Academic Paper Template */
-    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');  /* noqa */
+    @import url('../fonts/fonts.css');
     
     body {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: 'BookAcademic', 'Times New Roman', Times, serif;
         font-size: 12pt;
         line-height: 2;
         color: #000;

@@ -1,5 +1,6 @@
 """
-Markdown processor service with extensions and template rendering.
+Enhanced Markdown processor service with full extensions support.
+Includes python-markdown[extra] and pymdown-extensions for professional book generation.
 """
 
 import hashlib
@@ -19,47 +20,98 @@ from markdown.extensions.attr_list import AttrListExtension
 from markdown.extensions.def_list import DefListExtension
 from markdown.extensions.abbr import AbbrExtension
 from markdown.extensions.smarty import SmartyExtension
+from markdown.extensions.admonition import AdmonitionExtension
+from markdown.extensions.nl2br import Nl2BrExtension
+from markdown.extensions.sane_lists import SaneListExtension
+from markdown.extensions.fenced_code import FencedCodeExtension
+from markdown.extensions.extra import ExtraExtension
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
 from markupsafe import Markup
 import bleach
 
+# Try to import pymdown-extensions for advanced features
+try:
+    import pymdownx
+    PYMDOWN_AVAILABLE = True
+except ImportError:
+    PYMDOWN_AVAILABLE = False
+
 
 @dataclass
 class MarkdownConfig:
-    """Configuration for markdown processing."""
+    """Enhanced configuration for markdown processing with full extension support."""
 
-    # Core extensions
+    # Core extensions (markdown[extra])
+    enable_extra: bool = True  # Includes tables, footnotes, abbreviations, etc.
     enable_toc: bool = True
     enable_tables: bool = True
     enable_footnotes: bool = True
     enable_codehilite: bool = True
     enable_meta: bool = True
 
-    # Additional extensions
+    # Additional standard extensions
     enable_attr_list: bool = True
     enable_def_list: bool = True
     enable_abbr: bool = True
-    enable_smarty: bool = False
+    enable_smarty: bool = True  # For French typography (guillemets)
     enable_heading_ids: bool = True
-    enable_math: bool = False
-    enable_figures: bool = False
-    enable_cross_refs: bool = False
+    enable_admonition: bool = True  # For notes, warnings, etc.
+    enable_nl2br: bool = False  # New line to break
+    enable_sane_lists: bool = True
+    enable_fenced_code: bool = True
+
+    # PyMdown Extensions (if available)
+    enable_pymdown: bool = True
+    enable_math: bool = True  # Via pymdownx.arithmatex
+    enable_superfences: bool = True  # Advanced code blocks
+    enable_critic: bool = True  # Track changes
+    enable_caret: bool = True  # Superscript
+    enable_tilde: bool = True  # Subscript and strikethrough
+    enable_mark: bool = True  # Highlight
+    enable_smartsymbols: bool = True  # Smart symbols
+    enable_tasklist: bool = True  # Task lists
+    enable_emoji: bool = False  # Emoji support
+    enable_magiclink: bool = True  # Auto-link URLs
+    
+    # Typography and language
+    language: str = "fr"  # Default to French for guillemets
+    quotes_style: str = "french"  # french, english, auto
+    
+    # Cross-references and figures
+    enable_figures: bool = True
+    enable_cross_refs: bool = True
 
     # Custom extensions
     custom_extensions: List[str] = field(default_factory=list)
 
     # Processing options
     sanitize_html: bool = True
-    language: str = "en"
     use_cache: bool = True
 
     # Template options
     template_dir: str = "templates"
 
     def get_extensions(self) -> List:
-        """Get list of markdown extensions based on config."""
+        """Get comprehensive list of markdown extensions based on config."""
         extensions = []
 
+        # Use markdown[extra] if enabled (recommended)
+        if self.enable_extra:
+            extensions.append('extra')
+        else:
+            # Add individual extensions if extra is disabled
+            if self.enable_tables:
+                extensions.append(TableExtension())
+            if self.enable_footnotes:
+                extensions.append(FootnoteExtension())
+            if self.enable_abbr:
+                extensions.append(AbbrExtension())
+            if self.enable_attr_list:
+                extensions.append(AttrListExtension())
+            if self.enable_def_list:
+                extensions.append(DefListExtension())
+
+        # Table of Contents with French-friendly slugification
         if self.enable_toc:
             extensions.append(
                 TocExtension(
@@ -73,57 +125,94 @@ class MarkdownConfig:
                 )
             )
 
-        if self.enable_tables:
-            extensions.append(TableExtension())
-
-        if self.enable_footnotes:
-            extensions.append(FootnoteExtension())
-
+        # Code highlighting
         if self.enable_codehilite:
             extensions.append(
                 CodeHiliteExtension(
-                    css_class="highlight", linenums=False, guess_lang=True
+                    css_class="highlight", 
+                    linenums=False, 
+                    guess_lang=True
                 )
             )
+        
+        # Fenced code blocks (```)
+        if self.enable_fenced_code:
+            extensions.append(FencedCodeExtension())
 
+        # Metadata support
         if self.enable_meta:
             extensions.append(MetaExtension())
 
-        if self.enable_attr_list:
-            extensions.append(AttrListExtension())
-
-        if self.enable_def_list:
-            extensions.append(DefListExtension())
-
-        if self.enable_abbr:
-            extensions.append(AbbrExtension())
-
+        # Smart typography for French (guillemets, etc.)
         if self.enable_smarty:
             smarty_config = {
-                "smart_quotes": True,
-                "smart_dashes": True,
-                "smart_ellipses": True,
+                'smart_quotes': True,
+                'smart_dashes': True,
+                'smart_ellipses': True,
             }
-            if self.language == "fr":
-                smarty_config["substitutions"] = {
-                    "left-single-quote": "‹",
-                    "right-single-quote": "›",
-                    "left-double-quote": "«",
-                    "right-double-quote": "»",
+            # French typography settings
+            if self.language == "fr" or self.quotes_style == "french":
+                smarty_config['substitutions'] = {
+                    'left-single-quote': '‹',
+                    'right-single-quote': '›',
+                    'left-double-quote': '«\u00A0',  # With non-breaking space
+                    'right-double-quote': '\u00A0»',
                 }
             extensions.append(SmartyExtension(**smarty_config))
 
-        # Standard extensions
-        extensions.extend(
-            [
-                "markdown.extensions.extra",
-                "markdown.extensions.nl2br",
-                "markdown.extensions.sane_lists",
-                "markdown.extensions.fenced_code",
-            ]
-        )
+        # Admonitions (notes, warnings, etc.)
+        if self.enable_admonition:
+            extensions.append(AdmonitionExtension())
 
-        # Custom extensions
+        # New line to break
+        if self.enable_nl2br:
+            extensions.append(Nl2BrExtension())
+
+        # Sane lists
+        if self.enable_sane_lists:
+            extensions.append(SaneListExtension())
+
+        # PyMdown Extensions (if available and enabled)
+        if PYMDOWN_AVAILABLE and self.enable_pymdown:
+            # Math support
+            if self.enable_math:
+                extensions.append('pymdownx.arithmatex')
+                
+            # Advanced code blocks
+            if self.enable_superfences:
+                extensions.append('pymdownx.superfences')
+                
+            # Track changes
+            if self.enable_critic:
+                extensions.append('pymdownx.critic')
+                
+            # Superscript/Subscript
+            if self.enable_caret:
+                extensions.append('pymdownx.caret')
+            if self.enable_tilde:
+                extensions.append('pymdownx.tilde')
+                
+            # Highlighting
+            if self.enable_mark:
+                extensions.append('pymdownx.mark')
+                
+            # Smart symbols
+            if self.enable_smartsymbols:
+                extensions.append('pymdownx.smartsymbols')
+                
+            # Task lists
+            if self.enable_tasklist:
+                extensions.append('pymdownx.tasklist')
+                
+            # Emoji
+            if self.enable_emoji:
+                extensions.append('pymdownx.emoji')
+                
+            # Auto-link URLs
+            if self.enable_magiclink:
+                extensions.append('pymdownx.magiclink')
+
+        # Add custom extensions
         for ext in self.custom_extensions:
             try:
                 extensions.append(ext)

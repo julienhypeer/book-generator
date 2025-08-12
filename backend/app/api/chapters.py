@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db_session
-from app.services.chapter import ChapterService
+from app.services.chapter_service import ChapterService
 from app.validators.chapter import (
     ChapterCreate,
     ChapterUpdate,

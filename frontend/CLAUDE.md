@@ -126,3 +126,60 @@ npm run format
 2. **Virtual Scrolling** : Pour longs chapitres
 3. **Web Workers** : Parsing Markdown en background
 4. **Service Worker** : Cache offline des projets
+
+## ✅ État du Développement
+
+### PR #8 - Frontend Corrections (Complété)
+- ✅ Fix des tests Vitest dans useAutoSave.test.tsx (2 tests échouant)
+- ✅ Ajout de 4 méthodes de gestion mémoire à editorStore
+  - `clearUnusedContent()` - Nettoie le contenu des chapitres supprimés
+  - `forceCleanup()` - Nettoyage forcé avec garbage collection
+  - `getMemoryUsage()` - Monitore l'utilisation mémoire
+  - `resetToDefaults()` - Réinitialise l'état par défaut
+- ✅ Création hook useMemoryCleanup avec monitoring automatique
+- ✅ Extension interface Window pour garbage collection
+- ✅ Tests passent maintenant correctement avec async/await
+- ✅ Code formaté et linté
+
+### Corrections Techniques
+```typescript
+// Avant: Tests timeout à 5000ms avec mutations
+expect(saveMutation.mutateAsync).toHaveBeenCalledWith({
+  chapterId: 1, projectId: 1, data: { content: 'Updated Content' }
+});
+
+// Après: Tests basés sur comportement hook
+expect(result.current.hasUnsavedChanges).toBe(true);
+act(() => { vi.advanceTimersByTime(100); });
+expect(chapterService.updateChapter).toHaveBeenCalledWith(1, 1, { content: 'Updated Content' });
+```
+
+### Memory Management
+```typescript
+// Cleanup automatique toutes les 5 minutes
+const useMemoryCleanup = () => {
+  const { cleanup, getMemoryUsage } = useEditorStore();
+  
+  useEffect(() => {
+    const checkAndCleanup = () => {
+      const usage = getMemoryUsage();
+      if (usage.totalSize > 50 * 1024 || usage.chapters > 100) {
+        cleanup();
+      }
+    };
+    const interval = setInterval(checkAndCleanup, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [cleanup, getMemoryUsage]);
+};
+```
+
+### Structure Actuelle
+```
+/src
+  /components   → Composants React (Editor, Layout, Export)
+  /stores       → State Zustand avec persistence et cleanup ✅
+  /hooks        → Hooks (useAutoSave ✅, useMemoryCleanup ✅)
+  /services     → Services API (TanStack Query)
+  /utils        → Utilitaires et helpers
+  /types        → Types TypeScript partagés
+```
