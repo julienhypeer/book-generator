@@ -52,3 +52,10 @@ export interface ExportOptions {
   includePageNumbers: boolean;
   paperSize: 'a4' | 'letter' | 'book';
 }
+
+// Extend global Window interface for memory management
+declare global {
+  interface Window {
+    gc?: () => void;
+  }
+}

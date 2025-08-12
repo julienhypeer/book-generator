@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useEditorStore } from '@/stores/editorStore';
 import { useMutation } from '@tanstack/react-query';
 import { chapterService } from '@/services/chapterService';
@@ -73,12 +73,11 @@ export const useAutoSave = () => {
     unsavedChanges,
     settings.autoSave,
     settings.autoSaveDelay,
-    markChapterSaved,
-    saveMutation,
+    // Note: saveMutation is not included to prevent constant re-renders
   ]);
 
   // Manual save function
-  const saveNow = () => {
+  const saveNow = useCallback(() => {
     unsavedChanges.forEach((chapterId) => {
       const chapterContent = content.get(chapterId);
       if (chapterContent !== undefined) {
@@ -88,7 +87,7 @@ export const useAutoSave = () => {
         });
       }
     });
-  };
+  }, [unsavedChanges, content, saveMutation]);
 
   return { 
     saveNow, 
