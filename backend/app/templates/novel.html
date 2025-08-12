@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('en') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <meta name="author" content="{{ author }}">
+    
+    <style>
+        @page {
+            size: 5.5in 8.5in;  /* Standard US Trade Paperback */
+            margin: 0.75in 0.5in;
+            
+            @bottom-center {
+                content: counter(page);
+                font-size: 10pt;
+                font-family: Georgia, serif;
+            }
+        }
+        
+        @page :first {
+            @bottom-center {
+                content: "";  /* No page number on first page */
+            }
+        }
+        
+        @page chapter {
+            @bottom-center {
+                content: "";  /* No page number on chapter starts */
+            }
+        }
+        
+        body {
+            font-family: Garamond, Georgia, serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            text-align: justify;
+            hyphens: auto;
+        }
+        
+        /* Chapters */
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 20pt;
+            text-align: center;
+            margin: 3em 0 2em 0;
+            page-break-before: always;
+            page: chapter;
+        }
+        
+        .chapter-number {
+            font-size: 14pt;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5em;
+        }
+        
+        .chapter-title {
+            font-size: 24pt;
+            font-style: italic;
+        }
+        
+        /* First paragraph - no indent */
+        h1 + p,
+        .scene-break + p {
+            text-indent: 0;
+        }
+        
+        /* Regular paragraphs */
+        p {
+            margin: 0;
+            text-indent: 0.3in;
+            orphans: 2;
+            widows: 2;
+        }
+        
+        /* Scene breaks */
+        .scene-break {
+            text-align: center;
+            margin: 1.5em 0;
+            font-size: 14pt;
+        }
+        
+        .scene-break::before {
+            content: "* * *";
+            letter-spacing: 0.5em;
+        }
+        
+        /* Drop caps for chapter starts */
+        .drop-cap {
+            float: left;
+            font-size: 4em;
+            line-height: 0.8;
+            margin: 0.1em 0.1em 0 0;
+            font-family: Georgia, serif;
+        }
+        
+        /* Dialogue */
+        .dialogue {
+            margin: 0.5em 0;
+        }
+        
+        /* Epigraph */
+        .epigraph {
+            margin: 2em 4em 2em 2em;
+            font-style: italic;
+            text-align: right;
+        }
+        
+        .epigraph-author {
+            margin-top: 0.5em;
+            font-size: 10pt;
+        }
+        
+        .epigraph-author::before {
+            content: "— ";
+        }
+        
+        /* Front matter */
+        .front-matter {
+            page-break-after: always;
+        }
+        
+        .title-page {
+            text-align: center;
+            page-break-after: always;
+        }
+        
+        .title-page h1 {
+            font-size: 36pt;
+            margin: 4em 0 1em 0;
+            page-break-before: avoid;
+        }
+        
+        .title-page .author {
+            font-size: 18pt;
+            margin: 2em 0;
+        }
+        
+        .title-page .publisher {
+            position: absolute;
+            bottom: 2in;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10pt;
+        }
+        
+        /* Copyright page */
+        .copyright {
+            font-size: 9pt;
+            page-break-after: always;
+        }
+        
+        /* Dedication */
+        .dedication {
+            text-align: center;
+            font-style: italic;
+            margin: 4em 2em;
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    {% if front_matter %}
+    <div class="front-matter">
+        <div class="title-page">
+            <h1>{{ title }}</h1>
+            <div class="author">{{ author }}</div>
+            {% if publisher %}
+            <div class="publisher">{{ publisher }}</div>
+            {% endif %}
+        </div>
+        
+        {% if copyright %}
+        <div class="copyright">
+            {{ copyright | safe }}
+        </div>
+        {% endif %}
+        
+        {% if dedication %}
+        <div class="dedication">
+            {{ dedication | safe }}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {{ content | safe }}
+</body>
+</html>

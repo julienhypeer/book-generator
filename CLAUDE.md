@@ -191,8 +191,17 @@ Chaque PR doit passer les 6 tests critiques :
 - ✅ 18 tests unitaires complets
 - ✅ Code formaté (black) et validé (flake8)
 
+### ✅ PR #4 - Éditeur Monaco Intégré (Complété)
+- ✅ Frontend React 18 + TypeScript + Vite
+- ✅ Monaco Editor avec syntax highlighting Markdown
+- ✅ Auto-complétion et snippets Markdown (h1, bold, tables, etc.)
+- ✅ Zustand store pour state management + TanStack Query
+- ✅ Auto-save avec debouncing (30s par défaut)
+- ✅ Sidebar chapitres avec CRUD et réorganisation
+- ✅ Import/Export Markdown (single ou bulk)
+- ✅ 20/22 tests unitaires passent (91% succès)
+
 ### 🔄 Prochaines Étapes
-- PR #4: Éditeur Monaco Intégré
 - PR #5: Processeur Markdown
 - PR #6: Templates et Styles CSS
 - PR #7: Prévisualisation HTML Live
