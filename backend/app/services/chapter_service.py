@@ -106,3 +106,75 @@ class ChapterService:
         
         self.db.commit()
         return True
+    
+    def import_chapter_markdown(self, project_id: int, markdown_content: str) -> Chapter:
+        """Import a chapter from markdown content."""
+        # Extract title from first H1 heading
+        lines = markdown_content.strip().split('\n')
+        title = "Untitled Chapter"
+        content = markdown_content
+        
+        for line in lines:
+            if line.startswith('# '):
+                title = line[2:].strip()
+                # Remove title from content
+                content = '\n'.join(lines[lines.index(line)+1:]).strip()
+                break
+        
+        # Create chapter data
+        chapter_data = ChapterCreate(
+            title=title,
+            content=content
+        )
+        
+        return self.create_chapter(project_id, chapter_data)
+    
+    def import_bulk_markdown(self, project_id: int, markdown_content: str) -> List[Chapter]:
+        """Import multiple chapters from a single markdown document."""
+        chapters = []
+        current_chapter = None
+        current_content = []
+        
+        lines = markdown_content.strip().split('\n')
+        
+        for line in lines:
+            if line.startswith('# '):
+                # Save previous chapter if exists
+                if current_chapter:
+                    chapter_data = ChapterCreate(
+                        title=current_chapter,
+                        content='\n'.join(current_content).strip()
+                    )
+                    chapters.append(self.create_chapter(project_id, chapter_data))
+                
+                # Start new chapter
+                current_chapter = line[2:].strip()
+                current_content = []
+            else:
+                current_content.append(line)
+        
+        # Save last chapter
+        if current_chapter:
+            chapter_data = ChapterCreate(
+                title=current_chapter,
+                content='\n'.join(current_content).strip()
+            )
+            chapters.append(self.create_chapter(project_id, chapter_data))
+        
+        return chapters
+    
+    def bulk_reorder_chapters(self, project_id: int, reorder_data) -> List[Chapter]:
+        """Reorder chapters based on provided data."""
+        # Get all chapters for the project
+        chapters = self.get_chapters_by_project(project_id)
+        
+        # Update positions based on reorder_data
+        for item in reorder_data.chapters:
+            chapter = next((c for c in chapters if c.id == item['id']), None)
+            if chapter:
+                chapter.position = item['position']
+        
+        self.db.commit()
+        
+        # Return updated chapters sorted by position
+        return sorted(chapters, key=lambda x: x.position)

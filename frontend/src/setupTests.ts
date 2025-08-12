@@ -55,4 +55,4 @@ global.WebSocket = vi.fn().mockImplementation((url) => ({
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
   send: vi.fn(),
-}));
+})) as any;

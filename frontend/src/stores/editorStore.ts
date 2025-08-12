@@ -61,11 +61,7 @@ export const useEditorStore = create<EditorState>()(
       (set, get) => ({
         // Initial state
         currentProject: null,
-        
-        // Getters
-        get project() {
-          return get().currentProject;
-        },
+        project: null,
         
         chapters: [],
         activeChapterId: null,
@@ -79,10 +75,10 @@ export const useEditorStore = create<EditorState>()(
         
         // Actions
         setProject: (project) => 
-          set({ currentProject: project }),
+          set({ currentProject: project, project: project }),
         
         loadProject: (project) =>
-          set({ currentProject: project }),
+          set({ currentProject: project, project: project }),
         
         saveProject: async (project) => {
           set({ isSaving: true });
@@ -205,7 +201,7 @@ export const useEditorStore = create<EditorState>()(
             }
           });
           
-          set({ content: newContent, unsavedChanges: newUnsaved });
+          set({ content: newContent, unsavedChanges: newUnsaved as Set<number> });
         },
         
         trimContentHistory: (maxSize = 50) => {
@@ -231,7 +227,7 @@ export const useEditorStore = create<EditorState>()(
             set({
               chapters: recentChapters,
               content: newContent,
-              unsavedChanges: newUnsaved,
+              unsavedChanges: newUnsaved as Set<number>,
               activeChapterId: recentChapterIds.has(state.activeChapterId || 0) 
                 ? state.activeChapterId 
                 : recentChapters[0]?.id || null

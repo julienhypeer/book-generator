@@ -14,7 +14,7 @@ export const useAutoSave = () => {
     currentProject 
   } = useEditorStore();
   
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const saveMutation = useMutation({
     mutationFn: async ({ chapterId, content }: { chapterId: number; content: string }) => {

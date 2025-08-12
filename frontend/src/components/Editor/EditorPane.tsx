@@ -70,7 +70,7 @@ export const EditorPane: React.FC = () => {
                 >
                   <MonacoEditor
                     key={activeChapterId}
-                    chapterId={activeChapterId}
+                    chapterId={activeChapterId || 0}
                     content={chapterContent}
                   />
                 </Suspense>

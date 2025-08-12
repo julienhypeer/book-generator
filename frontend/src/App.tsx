@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect, useState, useCallback } from 'react';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
@@ -9,6 +9,7 @@ import { PreviewPane } from './components/Preview';
 import { ExportDialog } from './components/Export';
 import { useEditorStore } from './stores/editorStore';
 import { useAutoSave } from './hooks/useAutoSave';
+import { chapterService } from './services/chapterService';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -22,7 +23,7 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { project, loadProject, saveProject } = useEditorStore();
+  const { project, loadProject, saveProject, setChapters } = useEditorStore();
   const [showPreview, setShowPreview] = useState(false);
   const [showExport, setShowExport] = useState(false);
   // Settings not implemented yet
@@ -30,6 +31,21 @@ function AppContent() {
 
   // Auto-save functionality
   const { isSaving, hasUnsavedChanges } = useAutoSave();
+
+  // Load chapters from API when project loads
+  const { data: chapters, isLoading: chaptersLoading } = useQuery({
+    queryKey: ['chapters', project?.id],
+    queryFn: () => project ? chapterService.getChapters(project.id) : Promise.resolve([]),
+    enabled: !!project,
+    staleTime: 1000 * 60, // 1 minute
+  });
+
+  // Update store when chapters are loaded
+  useEffect(() => {
+    if (chapters) {
+      setChapters(chapters);
+    }
+  }, [chapters, setChapters]);
 
   useEffect(() => {
     // Load the default project or last opened project
@@ -80,7 +96,7 @@ function AppContent() {
   };
 
   const handleSettings = () => {
-    setShowSettings(true);
+    // setShowSettings(true);
     toast('Paramètres à venir...', { icon: '⚙️' });
   };
 

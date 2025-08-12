@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEditorStore } from '@/stores/editorStore';
 import { useAutoSave } from '@/hooks/useAutoSave';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { chapterService } from '@/services/chapterService';
 import { toast } from 'react-hot-toast';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 export const EditorToolbar: React.FC = () => {
+  const queryClient = useQueryClient();
   const {
     sidebarOpen,
     previewOpen,
@@ -35,7 +36,13 @@ export const EditorToolbar: React.FC = () => {
       const text = await file.text();
       return chapterService.importChapter(currentProject.id, text);
     },
-    onSuccess: () => {
+    onSuccess: (newChapter) => {
+      // Add the new chapter to the store immediately
+      useEditorStore.getState().addChapter(newChapter);
+      // Set it as active
+      useEditorStore.getState().setActiveChapter(newChapter.id);
+      // Invalidate chapters query to refresh the list from API
+      queryClient.invalidateQueries({ queryKey: ['chapters', currentProject?.id] });
       toast.success('Chapter imported successfully');
     },
     onError: () => {

@@ -6,7 +6,7 @@ from typing import Dict, Any
 import logging
 from pathlib import Path
 
-from app.core.database import get_db
+from app.core.database import get_db_session
 from app.services.project import ProjectService
 from app.services.chapter import ChapterService
 from app.services.pdf_generator import AdvancedPDFGenerator
@@ -22,7 +22,7 @@ async def export_project_pdf(
     project_id: int,
     export_request: ExportRequest,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db_session)
 ) -> Response:
     """
     Export project as professional-quality PDF with advanced pagination.
@@ -101,7 +101,7 @@ async def export_project_pdf(
 @router.post("/{project_id}/pdf/validate")
 async def validate_pdf_quality(
     project_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db_session)
 ) -> Dict[str, Any]:
     """
     Validate PDF quality without generating full document.

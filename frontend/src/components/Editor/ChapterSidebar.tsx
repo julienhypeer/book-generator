@@ -31,6 +31,9 @@ export const ChapterSidebar: React.FC = () => {
       return chapterService.createChapter(currentProject.id, { title });
     },
     onSuccess: (newChapter) => {
+      // Add the new chapter to the store immediately
+      useEditorStore.getState().addChapter(newChapter);
+      // Invalidate chapters query to refresh the list from API
       queryClient.invalidateQueries({ queryKey: ['chapters', currentProject?.id] });
       setActiveChapter(newChapter.id);
       setNewChapterTitle('');
@@ -48,7 +51,10 @@ export const ChapterSidebar: React.FC = () => {
       if (!currentProject) throw new Error('No project selected');
       return chapterService.deleteChapter(currentProject.id, chapterId);
     },
-    onSuccess: () => {
+    onSuccess: (_, chapterId) => {
+      // Remove the chapter from the store immediately
+      useEditorStore.getState().deleteChapter(chapterId);
+      // Invalidate chapters query to refresh the list from API
       queryClient.invalidateQueries({ queryKey: ['chapters', currentProject?.id] });
       toast.success('Chapter deleted successfully');
     },

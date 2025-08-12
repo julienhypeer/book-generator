@@ -22,13 +22,15 @@ export interface Chapter {
 
 export interface ProjectSettings {
   template?: 'roman' | 'technical' | 'academic';
-  font_size?: string;
+  page_format?: 'A4' | 'A5' | 'Letter';
+  font_family?: string;
+  font_size?: number;
   line_height?: number;
   margins?: {
-    top: string;
-    bottom: string;
-    left: string;
-    right: string;
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
   };
   page_numbers?: boolean;
   table_of_contents?: boolean;
@@ -40,7 +42,7 @@ export interface EditorSettings {
   lineHeight: number;
   wordWrap: 'on' | 'off' | 'wordWrapColumn' | 'bounded';
   minimap: boolean;
-  theme: 'vs' | 'vs-dark' | 'hc-black' | 'hc-light';
+  theme: 'vs' | 'vs-dark' | 'hc-black' | 'hc-light' | 'vs-light';
   autoSave: boolean;
   autoSaveDelay: number;
 }
