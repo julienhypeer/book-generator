@@ -25,7 +25,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
   const handleEditorWillMount: BeforeMount = (monaco) => {
     // Configure Markdown language features
     monaco.languages.setLanguageConfiguration('markdown', {
-      wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+      wordPattern: /(-?\d*\.\d\w*)|([^`~!@#%^&*()-=+[{}\\|;:'",./<>?\s]+)/g,
       comments: {
         blockComment: ['<!--', '-->']
       },
@@ -68,7 +68,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
     // Register Markdown snippets
     monaco.languages.registerCompletionItemProvider('markdown', {
-      provideCompletionItems: (model, position) => {
+      provideCompletionItems: (_model, _position) => {
         const suggestions = [
           {
             label: 'h1',

@@ -73,7 +73,7 @@ export const useAutoSave = () => {
     unsavedChanges,
     settings.autoSave,
     settings.autoSaveDelay,
-    // Note: saveMutation is not included to prevent constant re-renders
+    saveMutation
   ]);
 
   // Manual save function
