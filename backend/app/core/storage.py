@@ -56,10 +56,10 @@ def generate_roman_template() -> str:
     """Generate CSS template for roman/fiction books."""
     return """  # noqa: E501
     /* Roman/Fiction Book Template */
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');  /* noqa */
+    @import url('../fonts/fonts.css');
 
     body {
-        font-family: 'Crimson Text', Georgia, serif;
+        font-family: 'BookSerif', Georgia, serif;
         font-size: 11pt;
         line-height: 1.8;
         color: #2c2c2c;
@@ -109,10 +109,10 @@ def generate_technical_template() -> str:
     """Generate CSS template for technical documentation."""
     return """  # noqa: E501
     /* Technical Documentation Template */
-    @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap');  /* noqa */
+    @import url('../fonts/fonts.css');
 
     body {
-        font-family: 'Source Sans Pro', Arial, sans-serif;
+        font-family: 'BookSans', -apple-system, Arial, sans-serif;
         font-size: 10pt;
         line-height: 1.6;
         color: #333;
@@ -140,7 +140,7 @@ def generate_technical_template() -> str:
     }
 
     code {
-        font-family: 'Source Code Pro', monospace;
+        font-family: 'BookMono', Consolas, Monaco, monospace;
         background-color: #f5f5f5;
         padding: 0.2em 0.4em;
         border-radius: 3px;
@@ -192,10 +192,10 @@ def generate_academic_template() -> str:
     """Generate CSS template for academic papers."""
     return """  # noqa: E501
     /* Academic Paper Template */
-    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');  /* noqa */
+    @import url('../fonts/fonts.css');
 
     body {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: 'BookAcademic', 'Times New Roman', Times, serif;
         font-size: 12pt;
         line-height: 2;
         color: #000;

@@ -1,0 +1,136 @@
+/**
+ * Local font definitions using system fonts and web-safe alternatives
+ * Replaces Google Fonts for offline compatibility and privacy
+ */
+
+/* Georgia - Replacement for Crimson Text (serif) */
+@font-face {
+    font-family: 'BookSerif';
+    src: local('Georgia'),
+         local('Times New Roman'),
+         local('Times'),
+         local('Liberation Serif'),
+         local('DejaVu Serif');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookSerif';
+    src: local('Georgia Bold'),
+         local('Times New Roman Bold'),
+         local('Times Bold'),
+         local('Liberation Serif Bold'),
+         local('DejaVu Serif Bold');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookSerif';
+    src: local('Georgia Italic'),
+         local('Times New Roman Italic'),
+         local('Times Italic'),
+         local('Liberation Serif Italic'),
+         local('DejaVu Serif Italic');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* System Sans - Replacement for Source Sans Pro */
+@font-face {
+    font-family: 'BookSans';
+    src: local('Segoe UI'),
+         local('Helvetica Neue'),
+         local('Helvetica'),
+         local('Arial'),
+         local('Liberation Sans'),
+         local('DejaVu Sans');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookSans';
+    src: local('Segoe UI Semibold'),
+         local('Helvetica Neue Medium'),
+         local('Helvetica Bold'),
+         local('Arial Bold'),
+         local('Liberation Sans Bold'),
+         local('DejaVu Sans Bold');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookSans';
+    src: local('Segoe UI Bold'),
+         local('Helvetica Neue Bold'),
+         local('Helvetica Bold'),
+         local('Arial Bold'),
+         local('Liberation Sans Bold'),
+         local('DejaVu Sans Bold');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* System Mono - Replacement for Source Code Pro */
+@font-face {
+    font-family: 'BookMono';
+    src: local('Consolas'),
+         local('Monaco'),
+         local('Courier New'),
+         local('Courier'),
+         local('Liberation Mono'),
+         local('DejaVu Sans Mono');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Times - Academic font */
+@font-face {
+    font-family: 'BookAcademic';
+    src: local('Times New Roman'),
+         local('Times'),
+         local('Liberation Serif'),
+         local('DejaVu Serif');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookAcademic';
+    src: local('Times New Roman Bold'),
+         local('Times Bold'),
+         local('Liberation Serif Bold'),
+         local('DejaVu Serif Bold');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'BookAcademic';
+    src: local('Times New Roman Italic'),
+         local('Times Italic'),
+         local('Liberation Serif Italic'),
+         local('DejaVu Serif Italic');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* Fallback font stacks */
+.serif-stack {
+    font-family: 'BookSerif', Georgia, 'Times New Roman', Times, serif;
+}
+
+.sans-stack {
+    font-family: 'BookSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+.mono-stack {
+    font-family: 'BookMono', Consolas, Monaco, 'Courier New', Courier, monospace;
+}
+
+.academic-stack {
+    font-family: 'BookAcademic', 'Times New Roman', Times, serif;
+}
