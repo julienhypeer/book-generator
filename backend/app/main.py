@@ -10,6 +10,7 @@ from app.core.storage import init_storage
 from app.api import projects_router, chapters_router
 from app.api.markdown import router as markdown_router
 from app.api.export import router as export_router
+from app.api.websocket import router as websocket_router
 
 
 # Global database engine
@@ -90,6 +91,7 @@ app.include_router(projects_router)
 app.include_router(chapters_router)
 app.include_router(markdown_router)
 app.include_router(export_router)
+app.include_router(websocket_router)
 
 
 if __name__ == "__main__":

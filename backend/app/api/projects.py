@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db_session
-from app.services.project import ProjectService
+from app.services.project_service import ProjectService
 from app.validators.project import (
     ProjectCreate,
     ProjectUpdate,

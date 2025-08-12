@@ -3,7 +3,12 @@
 import shutil
 from pathlib import Path
 
-from app.core.config import Settings
+from app.core.config import Settings, settings as default_settings
+
+
+def get_project_path(project_id: str) -> Path:
+    """Get the storage path for a specific project."""
+    return default_settings.projects_dir / project_id
 
 
 def init_storage(settings: Settings) -> None:

@@ -201,15 +201,31 @@ Chaque PR doit passer les 6 tests critiques :
 - ✅ Import/Export Markdown (single ou bulk)
 - ✅ 20/22 tests unitaires passent (91% succès)
 
+### ✅ PR #5 - Processeur Markdown Avancé (Complété)
+- ✅ Markdown[extra] avec 25+ extensions complètes
+- ✅ Support pymdown-extensions (math, superfences, critic, etc.)
+- ✅ Typographie française avec guillemets («») et espaces insécables
+- ✅ Intégration Jinja2 pour templates HTML
+- ✅ Cache intelligent et batch processing
+- ✅ 23 tests unitaires passent
+- ✅ Support TOC, footnotes, tables, code highlighting
+
+### ✅ PR #6 - Templates et Export PDF (Complété)
+- ✅ Service de génération CSS dynamique (TemplateService)
+- ✅ 3 templates professionnels : roman, technical, academic
+- ✅ Endpoint /api/export/pdf avec WeasyPrint
+- ✅ Double-pass rendering pour synchronisation TOC
+- ✅ Configuration export flexible (formats, marges, typo)
+- ✅ Remplacement Google Fonts par fonts système locales
+- ✅ Tests complets export PDF avec PyPDF2
+
 ### 🔄 Prochaines Étapes
-- PR #5: Processeur Markdown
-- PR #6: Templates et Styles CSS
-- PR #7: Prévisualisation HTML Live
-- PR #8: Générateur PDF WeasyPrint
-- PR #9: Résolution Problèmes Pagination
-- PR #10: API Export Multi-formats
-- PR #11: Système de Versions
-- PR #12: Interface Utilisateur Complète
+- PR #7: Prévisualisation HTML Live avec WebSocket
+- PR #8: Corrections Frontend (tests Vitest, memory cleanup)
+- PR #9: Résolution Problèmes Pagination Avancés
+- PR #10: API Export Multi-formats (EPUB, DOCX)
+- PR #11: Système de Versions et Historique
+- PR #12: Interface Utilisateur Production-Ready
 
 ## 🔗 Repository GitHub
 - **URL**: https://github.com/julienhypeer/book-generator (privé)

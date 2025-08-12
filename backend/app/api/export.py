@@ -10,7 +10,7 @@ import weasyprint
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 
-from app.core.database import get_db
+from app.core.database import get_db_session
 from app.services.project_service import ProjectService
 from app.services.chapter_service import ChapterService
 from app.services.markdown_processor import MarkdownProcessor, MarkdownConfig
@@ -24,9 +24,9 @@ router = APIRouter(prefix="/api/export", tags=["export"])
 
 @router.post("/pdf/{project_id}")
 async def export_pdf(
-    project_id: str,
+    project_id: int,
     config: Optional[ExportConfig] = None,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db_session),
 ) -> Response:
     """
     Export project to PDF with WeasyPrint.
@@ -212,7 +212,7 @@ async def export_pdf(
 async def preview_export(
     project_id: str,
     format: ExportFormat = Query(ExportFormat.HTML),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db_session),
 ) -> dict:
     """
     Preview export in HTML format for debugging.
