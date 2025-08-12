@@ -182,7 +182,8 @@ Ellipsis...
         html = processor.convert(markdown, config)
 
         # Check for smart replacements
-        assert '"' in html or "&ldquo;" in html
+        # French typography uses guillemets by default
+        assert '«' in html or "&ldquo;" in html or '"' in html
         assert "–" in html or "&ndash;" in html
         assert "—" in html or "&mdash;" in html
         assert "…" in html or "&hellip;" in html
