@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { ExportOptionsData } from '../components/Export';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -37,3 +38,49 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Export functions
+export const exportProjectToPDF = async (
+  projectId: number, 
+  options: ExportOptionsData
+): Promise<Blob> => {
+  const response = await api.post(
+    `/export/${projectId}/pdf`,
+    options,
+    {
+      responseType: 'blob',
+      timeout: 120000, // 2 minutes for PDF generation
+    }
+  );
+  return response.data;
+};
+
+export const exportProjectToEPUB = async (
+  projectId: number, 
+  options: ExportOptionsData
+): Promise<Blob> => {
+  const response = await api.post(
+    `/export/${projectId}/epub`,
+    options,
+    {
+      responseType: 'blob',
+      timeout: 60000, // 1 minute for EPUB generation
+    }
+  );
+  return response.data;
+};
+
+export const exportProjectToDocx = async (
+  projectId: number, 
+  options: ExportOptionsData
+): Promise<Blob> => {
+  const response = await api.post(
+    `/export/${projectId}/docx`,
+    options,
+    {
+      responseType: 'blob',
+      timeout: 60000, // 1 minute for DOCX generation
+    }
+  );
+  return response.data;
+};

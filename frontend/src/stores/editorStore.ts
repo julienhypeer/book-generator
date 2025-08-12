@@ -5,6 +5,7 @@ import type { Chapter, Project, EditorSettings } from '@/types';
 interface EditorState {
   // Project data
   currentProject: Project | null;
+  project: Project | null;
   chapters: Chapter[];
   activeChapterId: number | null;
   
@@ -24,6 +25,7 @@ interface EditorState {
   // Actions
   setProject: (project: Project) => void;
   loadProject: (project: Project) => void;
+  saveProject: (project: Project) => Promise<void>;
   setChapters: (chapters: Chapter[]) => void;
   setActiveChapter: (chapterId: number) => void;
   addChapter: (chapter: Chapter) => void;
@@ -59,6 +61,12 @@ export const useEditorStore = create<EditorState>()(
       (set, get) => ({
         // Initial state
         currentProject: null,
+        
+        // Getters
+        get project() {
+          return get().currentProject;
+        },
+        
         chapters: [],
         activeChapterId: null,
         content: new Map(),
@@ -75,6 +83,20 @@ export const useEditorStore = create<EditorState>()(
         
         loadProject: (project) =>
           set({ currentProject: project }),
+        
+        saveProject: async (project) => {
+          set({ isSaving: true });
+          try {
+            // Mock save - in real app would call API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            set({ 
+              currentProject: { ...project, updated_at: new Date().toISOString() },
+              unsavedChanges: new Set()
+            });
+          } finally {
+            set({ isSaving: false });
+          }
+        },
         
         setChapters: (chapters) => {
           const content = new Map();

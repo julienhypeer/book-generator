@@ -39,3 +39,20 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// Mock URL.createObjectURL which is not available in jsdom
+global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+global.URL.revokeObjectURL = vi.fn();
+
+// Mock window.open 
+global.open = vi.fn();
+
+// Mock WebSocket
+global.WebSocket = vi.fn().mockImplementation((url) => ({
+  url,
+  readyState: 1,
+  close: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  send: vi.fn(),
+}));
