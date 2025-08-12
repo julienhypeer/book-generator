@@ -61,59 +61,67 @@ async def second_pass(html: str, page_breaks: dict) -> bytes:
 
 ## 🎯 Résolution des 6 Problèmes Critiques
 
+**Implémentation**: Service `AdvancedPDFGenerator` (PR #9) + `CSSTemplateManager` (PR #11)
+
 ### 1. Pages Blanches Parasites
-```python
-# Forcer pages blanches UNIQUEMENT éditoriales
-CSS_RULES = """
+```css
+/* CSS avancé avec templates personnalisables */
 .chapter-end { page-break-after: right; }
-.part-separator { page-break-before: right; }
-"""
+.part-separator { page-break-before: right; page-break-after: always; }
+.editorial-break { page-break-after: right; }
 ```
 
 ### 2. Espacement Mots (Rivières)
-```python
-# Configuration césure française
-HYPHENATION_CONFIG = {
-    'language': 'fr',
-    'min_chars': 5,
-    'min_left': 3,
-    'min_right': 2
+```css
+/* Césure française optimisée par template */
+body {
+  hyphens: auto;
+  hyphenate-language: "fr";
+  hyphenate-limit-chars: 6 3 3;
+  word-spacing: 0.16em;
+  letter-spacing: 0.01em;
 }
 ```
 
 ### 3. TOC Synchronisé
 ```python
-# Double passe obligatoire
-def generate_pdf(content):
-    page_map = first_pass(content)
-    return second_pass(content, page_map)
+# Double-passe avec PageBreakAnalyzer
+async def generate_pdf_two_pass(html, template='roman'):
+    # 1ère passe: analyser positions
+    document = HTML(string=html).render()
+    page_map = analyzer.extract_page_positions(document)
+    
+    # 2ème passe: injecter vrais numéros TOC
+    final_html = inject_toc_pages(html, page_map)
+    return HTML(string=final_html).render().write_pdf()
 ```
 
 ### 4. Hiérarchie Sous-Parties
 ```css
-/* CSS avec compteurs */
-h2 { counter-increment: section; }
-h3 { counter-increment: subsection; }
-h2:before { content: counter(chapter) "." counter(section); }
+/* Compteurs CSS automatiques par template */
+body { counter-reset: chapter section subsection; }
+h1 { counter-increment: chapter; counter-reset: section; }
+h2::before { content: counter(chapter) "." counter(section) " "; }
+h3::before { content: counter(chapter) "." counter(section) "." counter(subsection) " "; }
 ```
 
 ### 5. Barres Horizontales
 ```css
-/* Éviter artifacts Chrome */
+/* Élimination totale + alternatives sémantiques */
 hr { display: none; }
-.chapter-separator { 
-  border: none;
-  margin: 2em 0;
-}
+@media print { hr { display: none; } }
+.chapter-separator::after { content: "* * *"; font-size: 18pt; }
 ```
 
 ### 6. Titres Orphelins
 ```css
+/* Protection renforcée multi-niveaux */
 h1, h2, h3, h4 {
   page-break-after: avoid;
   page-break-inside: avoid;
-  orphans: 3;
-  widows: 3;
+  orphans: 4;
+  widows: 4;
+  min-height: 2.5em;
 }
 ```
 
@@ -244,6 +252,18 @@ async def health_check():
 - ✅ **Quality**: 15/18 tests passing, formatage black/flake8
 - ✅ **Fallbacks**: Implémentations manuelles si bibliothèques indisponibles
 
+### PR #11 - Système Templates CSS Avancés (Complété)
+- ✅ **TDD Implementation**: Tests écrits d'abord (479 lignes, 26 cas de test)
+- ✅ **CSSTemplateManager**: Gestionnaire 3 templates (ROMAN, TECHNICAL, ACADEMIC)
+- ✅ **TemplateRenderer**: Moteur de rendu CSS modulaire avec 7 modules
+- ✅ **CSSValidator**: Validateur qualité avec détection 6 problèmes critiques
+- ✅ **Template Inheritance**: Héritage intelligent base → spécialisé
+- ✅ **CSS Quality Rules**: Règles pagination, typographie, layout intégrées
+- ✅ **Minification**: CSS production optimisé avec variables personnalisées
+- ✅ **Error Handling**: Gestion erreurs robuste et validation configurations
+- ✅ **Integration**: Workflow complet config → CSS → validation (26/26 tests)
+- ✅ **Quality**: Code formaté black, linting flake8 propre
+
 ### Structure Actuelle
 ```
 /app
@@ -255,6 +275,7 @@ async def health_check():
     chapter.py      → ChapterService  
     pdf_generator.py → AdvancedPDFGenerator (double-passe)
     multi_format_exporter.py → MultiFormatExporter (EPUB/DOCX)
+    advanced_css_templates.py → CSSTemplateManager + TemplateRenderer + CSSValidator
   /tasks        → Tâches Celery (à venir)
   /validators   → Schémas Pydantic (project, chapter, export) ✅
 ```
