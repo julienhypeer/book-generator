@@ -9,6 +9,7 @@ from app.core.database import init_database, init_session_factory
 from app.core.storage import init_storage
 from app.api import projects_router, chapters_router
 from app.api.markdown import router as markdown_router
+from app.api.templates import router as templates_router
 
 
 # Global database engine
@@ -88,6 +89,7 @@ async def health_check():
 app.include_router(projects_router)
 app.include_router(chapters_router)
 app.include_router(markdown_router)
+app.include_router(templates_router)
 
 
 if __name__ == "__main__":
