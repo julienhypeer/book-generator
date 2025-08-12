@@ -69,9 +69,7 @@ def init_session_factory(engine: Engine) -> None:
 def get_db_session() -> Generator[Session, None, None]:
     """Get database session for FastAPI dependency injection."""
     if SessionLocal is None:
-        raise RuntimeError(
-            "Database not initialized. Call init_session_factory first."
-        )
+        raise RuntimeError("Database not initialized. Call init_session_factory first.")
 
     db = SessionLocal()
     try:

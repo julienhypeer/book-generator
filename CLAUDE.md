@@ -183,8 +183,15 @@ Chaque PR doit passer les 6 tests critiques :
 - 13 tests unitaires avec approche TDD
 - Code formaté et validé avec flake8
 
+### ✅ PR #3 - Gestionnaire de Chapitres (Complété)
+- ✅ Endpoints CRUD pour les chapitres (/api/projects/{id}/chapters)
+- ✅ Gestion automatique de l'ordre des chapitres (position)
+- ✅ Import/Export Markdown avec extraction de titre H1
+- ✅ Réorganisation des chapitres (bulk reorder)
+- ✅ 18 tests unitaires complets
+- ✅ Code formaté (black) et validé (flake8)
+
 ### 🔄 Prochaines Étapes
-- PR #3: Gestionnaire de Chapitres
 - PR #4: Éditeur Monaco Intégré
 - PR #5: Processeur Markdown
 - PR #6: Templates et Styles CSS
@@ -195,9 +202,17 @@ Chaque PR doit passer les 6 tests critiques :
 - PR #11: Système de Versions
 - PR #12: Interface Utilisateur Complète
 
+## 🔗 Repository GitHub
+- **URL**: https://github.com/julienhypeer/book-generator (privé)
+- **Issues ouvertes**:
+  - #2: Migrer vers PostgreSQL pour production
+  - #3: Embarquer fonts localement
+  - #4: Ajouter limites mémoire pour WeasyPrint
+  - #5: Versionner les templates CSS
+
 ## 📚 Documentation Détaillée
 
 - Architecture Frontend → `/frontend/CLAUDE.md`
-- Architecture Backend → `/backend/CLAUDE.md` ✅ (Mis à jour avec PR #1)
+- Architecture Backend → `/backend/CLAUDE.md` ✅ (Mis à jour avec PR #1 et #2)
 - Docker Setup → `/docker/CLAUDE.md`
 - Tests Strategy → `/tests/CLAUDE.md`

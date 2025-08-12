@@ -17,16 +17,12 @@ from app.validators.project import (
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
 
-def get_project_service(
-    db: Session = Depends(get_db_session)
-) -> ProjectService:
+def get_project_service(db: Session = Depends(get_db_session)) -> ProjectService:
     """Get project service instance."""
     return ProjectService(db)
 
 
-@router.post(
-    "", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED
-)
+@router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 def create_project(
     project_data: ProjectCreate,
     service: ProjectService = Depends(get_project_service),
