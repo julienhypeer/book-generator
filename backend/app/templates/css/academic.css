@@ -1,0 +1,469 @@
+/* Academic Template CSS for Thesis and Research Papers
+ * Format: A4 (210mm x 297mm)
+ * Optimized for academic writing, citations, and formal documents
+ */
+
+/* Page Setup */
+@page {
+    size: A4;
+    margin: 25mm 30mm 25mm 30mm; /* Top, Right, Bottom, Left */
+    
+    @bottom-center {
+        content: counter(page);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+    }
+    
+    @top-center {
+        content: string(document-title);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10pt;
+        font-style: italic;
+    }
+}
+
+/* Different page types */
+@page :first {
+    @top-center { content: none; }
+    @bottom-center { content: none; }
+}
+
+@page chapter {
+    @top-center { content: none; }
+}
+
+@page bibliography {
+    @top-center {
+        content: "Bibliography";
+    }
+}
+
+@page appendix {
+    @top-center {
+        content: "Appendix " counter(appendix, upper-alpha);
+    }
+}
+
+/* Typography */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 2; /* Double spacing for academic requirements */
+    text-align: left; /* Left aligned for academic style */
+    color: black;
+    hyphens: none; /* No hyphenation in academic writing */
+}
+
+/* Paragraphs */
+p {
+    margin: 0 0 12pt 0;
+    text-indent: 0; /* No indent for academic style */
+    orphans: 3;
+    widows: 3;
+}
+
+/* Headings with Numbering */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Times New Roman', Times, serif;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+    margin: 0;
+    font-weight: bold;
+    text-align: left;
+}
+
+h1 {
+    font-size: 16pt;
+    margin: 24pt 0 12pt 0;
+    page-break-before: always;
+    string-set: document-title content();
+    counter-increment: chapter;
+    counter-reset: section subsection subsubsection;
+}
+
+h1::before {
+    content: counter(chapter) ". ";
+}
+
+h2 {
+    font-size: 14pt;
+    margin: 18pt 0 12pt 0;
+    counter-increment: section;
+    counter-reset: subsection subsubsection;
+}
+
+h2::before {
+    content: counter(chapter) "." counter(section) " ";
+}
+
+h3 {
+    font-size: 13pt;
+    margin: 12pt 0 6pt 0;
+    counter-increment: subsection;
+    counter-reset: subsubsection;
+}
+
+h3::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) " ";
+}
+
+h4 {
+    font-size: 12pt;
+    margin: 12pt 0 6pt 0;
+    font-style: italic;
+    counter-increment: subsubsection;
+}
+
+h4::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) "." counter(subsubsection) " ";
+}
+
+/* Abstract */
+.abstract {
+    margin: 2em 4em;
+    font-size: 11pt;
+    line-height: 1.5;
+    text-align: justify;
+    page-break-after: always;
+}
+
+.abstract h2 {
+    text-align: center;
+    font-size: 14pt;
+    margin-bottom: 1em;
+}
+
+.abstract h2::before {
+    content: none;
+}
+
+/* Lists */
+ul, ol {
+    margin: 12pt 0 12pt 24pt;
+    padding: 0;
+}
+
+li {
+    margin: 6pt 0;
+    line-height: 2;
+    orphans: 2;
+    widows: 2;
+}
+
+/* Block Quotes and Citations */
+blockquote {
+    margin: 12pt 48pt;
+    font-size: 11pt;
+    line-height: 1.5; /* Single spacing for quotes */
+    page-break-inside: avoid;
+}
+
+.citation {
+    margin-left: 48pt;
+    font-size: 11pt;
+    line-height: 1.5;
+}
+
+/* Figures and Tables */
+figure {
+    margin: 24pt 0;
+    text-align: center;
+    page-break-inside: avoid;
+    counter-increment: figure;
+}
+
+figure img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+figcaption {
+    font-size: 10pt;
+    margin-top: 6pt;
+    text-align: center;
+}
+
+figcaption::before {
+    content: "Figure " counter(chapter) "." counter(figure) ": ";
+    font-weight: bold;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24pt 0;
+    page-break-inside: avoid;
+    font-size: 11pt;
+    counter-increment: table;
+}
+
+table caption {
+    font-size: 10pt;
+    margin-bottom: 6pt;
+    text-align: center;
+}
+
+table caption::before {
+    content: "Table " counter(chapter) "." counter(table) ": ";
+    font-weight: bold;
+}
+
+th, td {
+    padding: 6pt;
+    text-align: left;
+    border: 1px solid black;
+}
+
+th {
+    font-weight: bold;
+    background: #f0f0f0;
+}
+
+/* Equations */
+.equation {
+    margin: 12pt 0;
+    text-align: center;
+    position: relative;
+    counter-increment: equation;
+}
+
+.equation-number {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.equation-number::before {
+    content: "(" counter(chapter) "." counter(equation) ")";
+}
+
+/* Footnotes */
+.footnote {
+    font-size: 10pt;
+    line-height: 1.5;
+    margin-top: 12pt;
+    padding-top: 6pt;
+    border-top: 1px solid black;
+}
+
+.footnote-ref {
+    font-size: 0.8em;
+    vertical-align: super;
+}
+
+/* References/Bibliography */
+.references {
+    page-break-before: always;
+    page: bibliography;
+}
+
+.references h1::before {
+    content: none;
+}
+
+.references ul {
+    list-style: none;
+    margin-left: 0;
+}
+
+.references li {
+    margin: 12pt 0;
+    text-indent: -24pt;
+    padding-left: 24pt;
+    line-height: 1.5;
+}
+
+/* Appendices */
+.appendix {
+    page-break-before: always;
+    page: appendix;
+    counter-increment: appendix;
+}
+
+.appendix h1::before {
+    content: "Appendix " counter(appendix, upper-alpha) ": ";
+}
+
+/* Table of Contents */
+.toc {
+    page-break-after: always;
+    line-height: 1.5;
+}
+
+.toc h1 {
+    text-align: center;
+    page-break-before: auto;
+}
+
+.toc h1::before {
+    content: none;
+}
+
+.toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc li {
+    margin: 6pt 0;
+    position: relative;
+}
+
+.toc a {
+    text-decoration: none;
+    color: black;
+}
+
+.toc a::after {
+    content: leader(dotted) " " target-counter(attr(href), page);
+}
+
+.toc li.level-1 {
+    font-weight: bold;
+    margin-top: 12pt;
+}
+
+.toc li.level-2 {
+    margin-left: 24pt;
+    font-weight: normal;
+}
+
+.toc li.level-3 {
+    margin-left: 48pt;
+    font-size: 11pt;
+}
+
+/* List of Figures */
+.list-of-figures {
+    page-break-after: always;
+}
+
+.list-of-figures h1::before {
+    content: none;
+}
+
+.list-of-figures ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-of-figures li {
+    margin: 6pt 0;
+}
+
+.list-of-figures a::after {
+    content: leader(dotted) " " target-counter(attr(href), page);
+}
+
+/* List of Tables */
+.list-of-tables {
+    page-break-after: always;
+}
+
+.list-of-tables h1::before {
+    content: none;
+}
+
+.list-of-tables ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-of-tables li {
+    margin: 6pt 0;
+}
+
+.list-of-tables a::after {
+    content: leader(dotted) " " target-counter(attr(href), page);
+}
+
+/* Title Page */
+.title-page {
+    page-break-after: always;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.title-page h1 {
+    font-size: 24pt;
+    margin: 60pt 0 24pt 0;
+    page-break-before: auto;
+}
+
+.title-page h1::before {
+    content: none;
+}
+
+.title-page .subtitle {
+    font-size: 18pt;
+    margin: 12pt 0;
+}
+
+.title-page .author {
+    font-size: 16pt;
+    margin: 48pt 0 12pt 0;
+}
+
+.title-page .institution {
+    font-size: 14pt;
+    margin: 12pt 0;
+}
+
+.title-page .date {
+    font-size: 14pt;
+    position: absolute;
+    bottom: 60pt;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+/* Copyright Page */
+.copyright {
+    page-break-after: always;
+    font-size: 10pt;
+    text-align: left;
+    line-height: 1.5;
+}
+
+/* Code Blocks for Technical Content */
+pre {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 12pt;
+    margin: 12pt 0;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    line-height: 1.2;
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    background: #f5f5f5;
+    padding: 2pt 4pt;
+}
+
+/* Counters */
+body {
+    counter-reset: chapter figure table equation appendix;
+}
+
+/* Prevent orphan/widow lines */
+* {
+    orphans: 3;
+    widows: 3;
+}
+
+/* End of academic.css */
