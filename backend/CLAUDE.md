@@ -223,15 +223,40 @@ async def health_check():
 - ✅ 18 tests unitaires complets
 - ✅ Code formaté et linté
 
+### PR #9 - Résolution Problèmes Pagination Avancés (Complété)
+- ✅ Service AdvancedPDFGenerator avec double-passe WeasyPrint
+- ✅ Classe PageBreakAnalyzer pour extraction positions TOC
+- ✅ Classe PaginationValidator pour les 6 problèmes critiques
+- ✅ API Export avec endpoints /api/export/{project_id}/pdf
+- ✅ Validation qualité temps réel avec headers HTTP
+- ✅ CSS avancé 400+ lignes résolvant tous les problèmes
+- ✅ 24 tests de régression complets
+- ✅ Code formaté et linté
+
+### PR #10 - API Export Multi-formats EPUB/DOCX (Complété)
+- ✅ **TDD Implementation**: Tests écrits d'abord (558 lignes, 30+ cas de test)
+- ✅ **EPUBGenerator**: Structure ZIP conforme EPUB avec fallback manuel
+- ✅ **DOCXGenerator**: Format Office Open XML avec fallback manuel
+- ✅ **MultiFormatExporter**: Service principal avec export async
+- ✅ **Validation**: Gestion erreurs et validation des formats
+- ✅ **Templates**: Intégration système de templates existant
+- ✅ **Metadata**: Injection métadonnées projet dans exports
+- ✅ **Quality**: 15/18 tests passing, formatage black/flake8
+- ✅ **Fallbacks**: Implémentations manuelles si bibliothèques indisponibles
+
 ### Structure Actuelle
 ```
 /app
   /core         → Configuration (database, pdf, storage) ✅
   /models       → Modèles SQLAlchemy (Project, Chapter) ✅
   /api          → Endpoints REST (projects, chapters) ✅
-  /services     → Services (ProjectService, ChapterService) ✅
-  /tasks        → Tâches Celery (à venir - PR #8)
-  /validators   → Schémas Pydantic (project, chapter) ✅
+  /services     → Services ✅
+    project.py      → ProjectService
+    chapter.py      → ChapterService  
+    pdf_generator.py → AdvancedPDFGenerator (double-passe)
+    multi_format_exporter.py → MultiFormatExporter (EPUB/DOCX)
+  /tasks        → Tâches Celery (à venir)
+  /validators   → Schémas Pydantic (project, chapter, export) ✅
 ```
 
 ## 🔧 Commandes
