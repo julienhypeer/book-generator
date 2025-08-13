@@ -153,10 +153,12 @@ class MarkdownConfig:
             # French typography settings
             if self.language == "fr" or self.quotes_style == "french":
                 smarty_config['substitutions'] = {
-                    'left-single-quote': '‹',
-                    'right-single-quote': '›',
+                    'left-single-quote': "'",  # Keep simple quotes as is
+                    'right-single-quote': "'",  # Keep simple quotes as is
                     'left-double-quote': '«\u00A0',  # With non-breaking space
                     'right-double-quote': '\u00A0»',
+                    'left-angle-quote': '«\u00A0',  # Explicitly handle angle quotes
+                    'right-angle-quote': '\u00A0»',
                 }
             extensions.append(SmartyExtension(**smarty_config))
 

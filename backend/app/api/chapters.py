@@ -55,7 +55,7 @@ def export_all_chapters(
     service: ChapterService = Depends(get_chapter_service),
 ) -> Response:
     """Export all chapters as a single Markdown file."""
-    markdown = service.export_all_chapters_markdown(project_id, include_metadata)
+    markdown = service.export_all_chapters(project_id, include_metadata)
     return Response(
         content=markdown,
         media_type="text/markdown; charset=utf-8",

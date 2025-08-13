@@ -8,7 +8,7 @@ from pathlib import Path
 
 from app.core.database import get_db_session
 from app.services.project import ProjectService
-from app.services.chapter import ChapterService
+from app.services.chapter_service import ChapterService
 from app.services.pdf_generator import AdvancedPDFGenerator
 from app.validators.export import ExportRequest, ExportResponse
 from sqlalchemy.orm import Session
@@ -53,9 +53,15 @@ async def export_project_pdf(
         
         logger.info(f"Starting PDF export for project {project_id} ({len(chapters)} chapters)")
         
-        pdf_bytes, metadata = await pdf_generator.generate_from_project(
-            project, chapters
-        )
+        try:
+            pdf_bytes, metadata = await pdf_generator.generate_from_project(
+                project, chapters
+            )
+        except Exception as pdf_error:
+            logger.error(f"PDF generation error: {type(pdf_error).__name__}: {str(pdf_error)}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            raise
         
         # Validate quality
         quality_report = metadata.get('quality_validation', {})

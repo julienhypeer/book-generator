@@ -1,5 +1,6 @@
 """Project model for database."""
 
+import json
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship
@@ -32,6 +33,24 @@ class Project(Base):
     chapters = relationship(
         "Chapter", back_populates="project", cascade="all, delete-orphan"
     )
+
+    @property
+    def settings(self):
+        """Get settings as dictionary from JSON string."""
+        if self.settings_json:
+            try:
+                return json.loads(self.settings_json)
+            except json.JSONDecodeError:
+                return {}
+        return {}
+
+    @settings.setter
+    def settings(self, value):
+        """Set settings from dictionary to JSON string."""
+        if value:
+            self.settings_json = json.dumps(value)
+        else:
+            self.settings_json = None
 
     def __repr__(self):
         return (

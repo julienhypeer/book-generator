@@ -18,28 +18,31 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
 }) => {
   const [options, setOptions] = useState<ExportOptionsData>({
     format: 'pdf',
-    template: 'roman',
+    template: 'technical',
     include_toc: true,
     quality_validation: true,
   });
+  const [customFilename, setCustomFilename] = useState(project.title);
 
   const exportMutation = useMutation({
     mutationFn: async () => {
       let blob: Blob;
       let filename: string;
 
+      const baseFilename = customFilename.trim() || project.title;
+      
       switch (options.format) {
         case 'pdf':
           blob = await exportProjectToPDF(project.id, options);
-          filename = `${project.title}.pdf`;
+          filename = `${baseFilename}.pdf`;
           break;
         case 'epub':
           blob = await exportProjectToEPUB(project.id, options);
-          filename = `${project.title}.epub`;
+          filename = `${baseFilename}.epub`;
           break;
         case 'docx':
           blob = await exportProjectToDocx(project.id, options);
-          filename = `${project.title}.docx`;
+          filename = `${baseFilename}.docx`;
           break;
         default:
           throw new Error(`Format non supporté: ${options.format}`);
@@ -112,6 +115,23 @@ export const ExportDialog: React.FC<ExportDialogProps> = ({
               </div>
             </div>
 
+            {/* Nom du fichier personnalisé */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nom du fichier
+              </label>
+              <input
+                type="text"
+                value={customFilename}
+                onChange={(e) => setCustomFilename(e.target.value)}
+                placeholder="Nom du fichier (sans extension)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+              <p className="mt-1 text-sm text-gray-500">
+                Le fichier sera enregistré sous : {customFilename || project.title}.{options.format}
+              </p>
+            </div>
+            
             <ExportOptions 
               options={options} 
               onChange={setOptions} 

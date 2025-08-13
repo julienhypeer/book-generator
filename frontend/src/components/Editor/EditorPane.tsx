@@ -4,6 +4,7 @@ import { ChapterSidebar } from './ChapterSidebar';
 import { EditorToolbar } from './EditorToolbar';
 import { EditorStatusBar } from './EditorStatusBar';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
+import { ResizablePanel } from '../Layout/ResizablePanel';
 
 // Lazy load Monaco Editor for better performance
 const MonacoEditor = lazy(() => 
@@ -27,8 +28,8 @@ export const EditorPane: React.FC = () => {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-700">No project selected</h2>
-          <p className="mt-2 text-gray-500">Select or create a project to start editing</p>
+          <h2 className="text-2xl font-semibold text-gray-700">Aucun projet sélectionné</h2>
+          <p className="mt-2 text-gray-500">Sélectionnez ou créez un projet pour commencer l'édition</p>
         </div>
       </div>
     );
@@ -43,9 +44,15 @@ export const EditorPane: React.FC = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         {sidebarOpen && (
-          <div className="w-64 border-r border-gray-200 bg-white">
+          <ResizablePanel
+            defaultWidth={256}
+            minWidth={200}
+            maxWidth={400}
+            storageKey="chapter-sidebar-width"
+            className="border-r border-gray-200 bg-white"
+          >
             <ChapterSidebar />
-          </div>
+          </ResizablePanel>
         )}
 
         {/* Editor */}
@@ -80,10 +87,10 @@ export const EditorPane: React.FC = () => {
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <h3 className="text-xl font-medium text-gray-700">
-                  No chapter selected
+                  Aucun chapitre sélectionné
                 </h3>
                 <p className="mt-2 text-gray-500">
-                  Select a chapter from the sidebar or create a new one
+                  Sélectionnez un chapitre dans la barre latérale ou créez-en un nouveau
                 </p>
               </div>
             </div>
@@ -94,10 +101,10 @@ export const EditorPane: React.FC = () => {
         {previewOpen && (
           <div className="w-1/2 border-l border-gray-200 bg-white">
             <div className="h-full p-4">
-              <h3 className="mb-4 text-lg font-medium">Preview</h3>
+              <h3 className="mb-4 text-lg font-medium">Prévisualisation</h3>
               {/* Preview component will be added later */}
               <div className="rounded border border-gray-200 p-4">
-                <p className="text-gray-500">Preview will appear here</p>
+                <p className="text-gray-500">La prévisualisation apparaîtra ici</p>
               </div>
             </div>
           </div>

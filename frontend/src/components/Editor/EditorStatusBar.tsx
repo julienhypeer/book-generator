@@ -38,7 +38,7 @@ export const EditorStatusBar: React.FC = () => {
     if (isSaving) {
       return {
         icon: <ArrowPathIcon className="h-4 w-4 animate-spin" />,
-        text: 'Saving...',
+        text: 'Enregistrement...',
         className: 'text-blue-600',
       };
     }
@@ -46,14 +46,14 @@ export const EditorStatusBar: React.FC = () => {
     if (hasUnsavedChanges) {
       return {
         icon: <ExclamationCircleIcon className="h-4 w-4" />,
-        text: 'Unsaved changes',
+        text: 'Modifications non enregistrées',
         className: 'text-orange-600',
       };
     }
     
     return {
       icon: <CheckCircleIcon className="h-4 w-4" />,
-      text: 'All changes saved',
+      text: 'Toutes les modifications enregistrées',
       className: 'text-green-600',
     };
   };
@@ -67,7 +67,7 @@ export const EditorStatusBar: React.FC = () => {
         {activeChapter && (
           <>
             <span className="text-gray-600">
-              Chapter {activeChapter.position}: {activeChapter.title}
+              Chapitre {activeChapter.position}: {activeChapter.title}
             </span>
             <span className="text-gray-400">|</span>
           </>
@@ -75,9 +75,9 @@ export const EditorStatusBar: React.FC = () => {
         
         {/* Statistics */}
         <div className="flex items-center gap-3 text-gray-600">
-          <span>Lines: {lineCount.toLocaleString()}</span>
-          <span>Words: {wordCount.toLocaleString()}</span>
-          <span>Characters: {charCount.toLocaleString()}</span>
+          <span>Lignes: {lineCount.toLocaleString()}</span>
+          <span>Mots: {wordCount.toLocaleString()}</span>
+          <span>Caractères: {charCount.toLocaleString()}</span>
         </div>
       </div>
 
@@ -93,27 +93,27 @@ export const EditorStatusBar: React.FC = () => {
         {settings.autoSave ? (
           <span className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-green-400" />
-            Auto-save: {settings.autoSaveDelay / 1000}s
+            Sauvegarde auto: {settings.autoSaveDelay / 1000}s
           </span>
         ) : (
           <span className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-gray-400" />
-            Auto-save: Off
+            Sauvegarde auto: Désactivée
           </span>
         )}
         
         <span className="text-gray-400">|</span>
         
         {/* Editor settings */}
-        <span>Font: {settings.fontSize}px</span>
-        <span>Theme: {settings.theme === 'vs-dark' ? 'Dark' : 'Light'}</span>
+        <span>Police: {settings.fontSize}px</span>
+        <span>Thème: {settings.theme === 'vs-dark' ? 'Sombre' : 'Clair'}</span>
         
         {/* Unsaved chapters count */}
         {unsavedChanges.size > 1 && (
           <>
             <span className="text-gray-400">|</span>
             <span className="text-orange-600">
-              {unsavedChanges.size} unsaved chapters
+              {unsavedChanges.size} chapitres non enregistrés
             </span>
           </>
         )}

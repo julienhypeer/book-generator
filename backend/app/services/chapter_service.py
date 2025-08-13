@@ -170,11 +170,61 @@ class ChapterService:
         
         # Update positions based on reorder_data
         for item in reorder_data.chapters:
-            chapter = next((c for c in chapters if c.id == item['id']), None)
+            chapter = next((c for c in chapters if c.id == item.chapter_id), None)
             if chapter:
-                chapter.position = item['position']
+                chapter.position = item.new_position
         
         self.db.commit()
         
         # Return updated chapters sorted by position
         return sorted(chapters, key=lambda x: x.position)
+    
+    # Alias methods for API compatibility
+    def delete_chapter(self, project_id: int, chapter_id: int) -> bool:
+        """Alias for delete() to match API expectations."""
+        return self.delete(project_id, chapter_id)
+    
+    def update_chapter(self, project_id: int, chapter_id: int, data) -> Optional[Chapter]:
+        """Alias for update() to match API expectations."""
+        if hasattr(data, 'dict'):
+            # If it's a Pydantic model, convert to dict
+            update_data = data.dict(exclude_unset=True)
+        else:
+            update_data = data
+        return self.update(project_id, chapter_id, update_data)
+    
+    def export_chapter_markdown(self, project_id: int, chapter_id: int, include_metadata: bool = False) -> str:
+        """Export a chapter as markdown."""
+        chapter = self.get_chapter(project_id, chapter_id)
+        if not chapter:
+            raise ValueError(f"Chapter {chapter_id} not found")
+        
+        markdown = f"# {chapter.title}\n\n{chapter.content}"
+        
+        if include_metadata:
+            metadata = f"---\nid: {chapter.id}\nproject_id: {chapter.project_id}\nposition: {chapter.position}\ncreated_at: {chapter.created_at}\nupdated_at: {chapter.updated_at}\n---\n\n"
+            markdown = metadata + markdown
+        
+        return markdown
+    
+    def export_all_chapters(self, project_id: int, include_metadata: bool = False) -> str:
+        """Export all chapters as a single markdown document."""
+        chapters = self.list_chapters(project_id)
+        if not chapters:
+            return ""
+        
+        markdown_parts = []
+        for chapter in chapters:
+            chapter_markdown = f"# {chapter.title}\n\n{chapter.content}"
+            
+            if include_metadata:
+                metadata = f"---\nid: {chapter.id}\nposition: {chapter.position}\n---\n\n"
+                chapter_markdown = metadata + chapter_markdown
+            
+            markdown_parts.append(chapter_markdown)
+        
+        return "\n\n---\n\n".join(markdown_parts)
+    
+    def get_chapters_by_project(self, project_id: int) -> List[Chapter]:
+        """Get all chapters for a project (alias for list_chapters)."""
+        return self.list_chapters(project_id)

@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEditorStore } from '@/stores/editorStore';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { chapterService } from '@/services/chapterService';
+import { projectService } from '@/services/projectService';
 import { toast } from 'react-hot-toast';
 import {
-  DocumentArrowDownIcon,
   DocumentArrowUpIcon,
   Bars3Icon,
   EyeIcon,
   EyeSlashIcon,
-  Cog6ToothIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 
@@ -22,11 +21,29 @@ export const EditorToolbar: React.FC = () => {
     toggleSidebar,
     togglePreview,
     currentProject,
-    activeChapterId,
-    chapters,
+    setCurrentProject,
   } = useEditorStore();
 
   const { saveNow, isSaving, hasUnsavedChanges } = useAutoSave();
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+
+  // Update project title mutation
+  const updateTitleMutation = useMutation({
+    mutationFn: async (title: string) => {
+      if (!currentProject) throw new Error('No project selected');
+      return projectService.updateProject(currentProject.id, { title });
+    },
+    onSuccess: (updatedProject) => {
+      setCurrentProject(updatedProject);
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Titre du projet mis à jour');
+      setIsEditingTitle(false);
+    },
+    onError: () => {
+      toast.error('Échec de la mise à jour du titre');
+    },
+  });
 
   // Import markdown mutation
   const importMutation = useMutation({
@@ -43,74 +60,13 @@ export const EditorToolbar: React.FC = () => {
       useEditorStore.getState().setActiveChapter(newChapter.id);
       // Invalidate chapters query to refresh the list from API
       queryClient.invalidateQueries({ queryKey: ['chapters', currentProject?.id] });
-      toast.success('Chapter imported successfully');
+      toast.success('Chapitre importé avec succès');
     },
     onError: () => {
-      toast.error('Failed to import chapter');
+      toast.error('Échec de l\'importation du chapitre');
     },
   });
 
-  // Export chapter mutation
-  const exportChapterMutation = useMutation({
-    mutationFn: async () => {
-      if (!currentProject || !activeChapterId) {
-        throw new Error('No chapter selected');
-      }
-      
-      const markdown = await chapterService.exportChapter(
-        currentProject.id,
-        activeChapterId,
-        true // Include metadata
-      );
-      
-      // Download the markdown file
-      const blob = new Blob([markdown], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const chapter = chapters.find(c => c.id === activeChapterId);
-      a.href = url;
-      a.download = `${chapter?.title || 'chapter'}.md`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    },
-    onSuccess: () => {
-      toast.success('Chapter exported successfully');
-    },
-    onError: () => {
-      toast.error('Failed to export chapter');
-    },
-  });
-
-  // Export all chapters mutation
-  const exportAllMutation = useMutation({
-    mutationFn: async () => {
-      if (!currentProject) throw new Error('No project selected');
-      
-      const markdown = await chapterService.exportAllChapters(
-        currentProject.id,
-        true // Include metadata
-      );
-      
-      // Download the markdown file
-      const blob = new Blob([markdown], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${currentProject.title || 'book'}.md`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    },
-    onSuccess: () => {
-      toast.success('All chapters exported successfully');
-    },
-    onError: () => {
-      toast.error('Failed to export chapters');
-    },
-  });
 
   const handleImport = () => {
     const input = document.createElement('input');
@@ -135,23 +91,63 @@ export const EditorToolbar: React.FC = () => {
         <button
           onClick={toggleSidebar}
           className="rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-          title={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+          title={sidebarOpen ? 'Masquer la barre latérale' : 'Afficher la barre latérale'}
         >
           <Bars3Icon className="h-5 w-5" />
         </button>
 
         {/* Project title */}
         <div className="ml-2">
-          <h1 className="text-lg font-semibold text-gray-900">
-            {currentProject.title}
-          </h1>
+          {isEditingTitle ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (editedTitle.trim()) {
+                  updateTitleMutation.mutate(editedTitle.trim());
+                }
+              }}
+              className="flex items-center"
+            >
+              <input
+                type="text"
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                onBlur={() => {
+                  if (editedTitle.trim() && editedTitle !== currentProject.title) {
+                    updateTitleMutation.mutate(editedTitle.trim());
+                  } else {
+                    setIsEditingTitle(false);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setEditedTitle(currentProject.title);
+                    setIsEditingTitle(false);
+                  }
+                }}
+                className="text-lg font-semibold text-gray-900 bg-transparent border-b-2 border-blue-500 focus:outline-none"
+                autoFocus
+              />
+            </form>
+          ) : (
+            <h1
+              className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                setEditedTitle(currentProject.title);
+                setIsEditingTitle(true);
+              }}
+              title="Cliquez pour modifier le titre"
+            >
+              {currentProject.title}
+            </h1>
+          )}
         </div>
 
         {/* Save indicator */}
         {hasUnsavedChanges && (
           <div className="ml-4 flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-orange-400" />
-            <span className="text-sm text-gray-600">Unsaved changes</span>
+            <span className="text-sm text-gray-600">Modifications non enregistrées</span>
           </div>
         )}
       </div>
@@ -163,49 +159,28 @@ export const EditorToolbar: React.FC = () => {
           onClick={handleImport}
           disabled={importMutation.isPending}
           className="flex items-center gap-1 rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
-          title="Import markdown"
+          title="Importer un fichier Markdown"
         >
           <DocumentArrowUpIcon className="h-4 w-4" />
-          <span>Import</span>
+          <span>Importer</span>
         </button>
 
-        {/* Export current chapter */}
-        <button
-          onClick={() => exportChapterMutation.mutate()}
-          disabled={!activeChapterId || exportChapterMutation.isPending}
-          className="flex items-center gap-1 rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-          title="Export current chapter"
-        >
-          <DocumentArrowDownIcon className="h-4 w-4" />
-          <span>Export Chapter</span>
-        </button>
-
-        {/* Export all */}
-        <button
-          onClick={() => exportAllMutation.mutate()}
-          disabled={chapters.length === 0 || exportAllMutation.isPending}
-          className="flex items-center gap-1 rounded px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-          title="Export all chapters"
-        >
-          <DocumentArrowDownIcon className="h-4 w-4" />
-          <span>Export All</span>
-        </button>
 
         {/* Save now */}
         <button
           onClick={saveNow}
           disabled={!hasUnsavedChanges || isSaving}
           className="flex items-center gap-1 rounded bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
-          title="Save now (Ctrl+S)"
+          title="Enregistrer maintenant (Ctrl+S)"
         >
           {isSaving ? (
             <>
               <ArrowPathIcon className="h-4 w-4 animate-spin" />
-              <span>Saving...</span>
+              <span>Enregistrement...</span>
             </>
           ) : (
             <>
-              <span>Save</span>
+              <span>Enregistrer</span>
             </>
           )}
         </button>
@@ -217,7 +192,7 @@ export const EditorToolbar: React.FC = () => {
         <button
           onClick={togglePreview}
           className="flex items-center gap-1 rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-          title={previewOpen ? 'Hide preview' : 'Show preview'}
+          title={previewOpen ? 'Masquer la prévisualisation' : 'Afficher la prévisualisation'}
         >
           {previewOpen ? (
             <EyeSlashIcon className="h-5 w-5" />
@@ -226,13 +201,6 @@ export const EditorToolbar: React.FC = () => {
           )}
         </button>
 
-        {/* Settings */}
-        <button
-          className="rounded p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-          title="Editor settings"
-        >
-          <Cog6ToothIcon className="h-5 w-5" />
-        </button>
       </div>
     </div>
   );

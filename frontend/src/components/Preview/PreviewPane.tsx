@@ -21,9 +21,21 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
   // WebSocket connection for real-time updates
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || !projectId) return;
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/preview/${projectId}`);
+    // Use the same host as the frontend but on backend port
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsHost = window.location.hostname;
+    const wsPort = 8000; // Backend port
+    const ws = new WebSocket(`${wsProtocol}//${wsHost}:${wsPort}/ws/preview/${projectId}`);
+
+    ws.onopen = () => {
+      console.log('WebSocket connected for preview');
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -51,7 +63,9 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
     setZoom(newZoom);
   };
 
-  const previewUrl = `/api/preview/${projectId}?t=${refreshKey}`;
+  // Use the backend API URL for preview
+  const apiUrl = `http://${window.location.hostname}:8000/api`;
+  const previewUrl = `${apiUrl}/projects/${projectId}/preview?t=${refreshKey}`;
 
   if (!isVisible) return null;
 
